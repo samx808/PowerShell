@@ -31,7 +31,7 @@ param(
 [int]$NumHyperCores
 )
 
-$Log = "C:\CPUStressTest.ps1.log"
+$Log = ".\CPUStressTest.ps1.log"
 $StartDate = Get-Date
 Write-Output "============= CPU Stress Test Started: $StartDate =============" >> $Log
 Write-Output "Started By: $env:username" >> $Log
@@ -40,7 +40,7 @@ $Prompt = Read-Host "Are you sure you want to proceed? (Y/N)"
 
 if ($Prompt -eq 'Y')
 {
-	Write-Warning "To cancel execution of all jobs, close the PowerShell Host Window."
+	Write-Warning "To cancel execution of all jobs press Ctrl+Z or close the PowerShell Host Window."
 	Write-Output "Hyper Core Count: $NumHyperCores" >> $Log
 
 foreach ($loopnumber in 1..$NumHyperCores){
@@ -52,8 +52,17 @@ foreach ($loopnumber in 1..$NumHyperCores){
     }# end Start-Job
 }# end foreach
 
-Wait-Job *
-Clear-Host
+while (Get-Job *) {
+    if ([Console]::KeyAvailable) {
+        $key = [Console]::ReadKey($true)
+        if ($key.key -eq "Z" -and $key.modifiers -eq "Control") { 
+          # Clean up and exit
+          Stop-Job *
+          Remove-Job *
+          Write-Output "Keyboard Interrupt Detected! Exiting..."
+        }
+      }
+}
 Receive-Job *
 Remove-Job *
 }# end if
