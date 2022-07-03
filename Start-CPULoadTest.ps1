@@ -17,7 +17,7 @@ allowed by int32.
 .INPUTS
 None.
 .EXAMPLE
-.\Invoke-CPUStressTest.ps1 -NumHyperCores 4
+.\Start-CPULoadTest.ps1 -NumHyperCores 4
 
 This will execute the script against 4 cores. In this case, it may be a 2-core CPU with hyper-threading enabled.
 
